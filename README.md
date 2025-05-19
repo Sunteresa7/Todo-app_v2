@@ -44,7 +44,7 @@ Tables:
 ## 🚀 How to Run
 
 1. Clone this repository into `htdocs/`
-2. Import `final_updated_database.sql` via phpMyAdmin
+2. Import `database.sql` via phpMyAdmin
 3. Open `http://localhost/todo-app/register.php` to test user flow
 4. Open `http://localhost/todo-app/admin_login.php` to access admin dashboard
 
