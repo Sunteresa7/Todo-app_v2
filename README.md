@@ -1,58 +1,51 @@
-# Secure To-Do List Management System
+# 🛡️ Secure To-Do List Management System (AWS Migration Project)
 
-This is a secure, role-based To-Do List web application developed for the CCS6344 Database & Cloud Security course project.
+This is a secure, role-based To-Do List web application developed for the **CCS6344 Database & Cloud Security** course. The system was originally built using XAMPP (PHP + MySQL) and is now fully migrated to **Amazon Web Services (AWS)** with modern cloud-native architecture and security controls.
+
+---
 
 ## 📌 Features
 
 ### 👤 User Module
-- Register and log in securely
-- Add, edit, delete tasks
-- Tasks have due dates and categories
-- Reminders for overdue and due-today tasks
-- reCAPTCHA v2 for bot protection
-- Passwords hashed with bcrypt
+- Secure registration and login (with password hashing)
+- Task creation, editing, deletion with due dates & categories
+- Visual reminders for overdue and due-today tasks
+- reCAPTCHA v2 bot protection
 
 ### 👮 Admin Module
-- Separate admin login page
-- View list of users (with registration date)
-- Delete user accounts (cascades tasks)
-- Cannot view or manage tasks (privacy enforced)
+- Dedicated admin login page
+- View registered users and their join dates
+- Delete users (cascades all related tasks)
+- No access to user task data (role separation enforced)
 
-### 🔐 Security Measures
-- Prepared SQL statements to prevent SQL injection
-- Session-based role separation (`user_id` vs `admin_id`)
-- Output encoding to prevent XSS
-- Foreign key constraints for data integrity
-- CAPTCHA on all login forms
+---
 
-## 🗃️ Database Structure
+## 🔐 Security Features
+- Enforced **role-based access control** (RBAC)
+- **Prepared SQL statements** (SQL injection prevention)
+- **XSS protection** using output encoding
+- **bcrypt password hashing**
+- **CAPTCHA** on login forms
+- **Cloud-based WAF rules** for input filtering
+- Encrypted RDS MySQL database (at rest)
+- CloudTrail logs and CloudWatch alerts
 
-Tables:
-- `users`: Stores credentials, timestamps
-- `tasks`: Linked to users (FK), stores task content, category, due date
-- `admins`: Admin-only login table
+---
 
-## 🛠️ Technologies Used
+## 🏗️ AWS Cloud Architecture
 
-- PHP 8.x
-- MySQL 8.x
-- Bootstrap 5
-- Apache (XAMPP)
-- Google reCAPTCHA v2
-- phpMyAdmin
+- **Amazon EC2** (Apache + PHP app)
+- **Amazon RDS** (MySQL 8.0 in private subnet)
+- **Application Load Balancer (ALB)** for routing
+- **AWS WAF** for threat mitigation
+- **IAM roles** with least privilege
+- **CloudFormation** for infrastructure-as-code
+- **CloudTrail + S3** for logging
+- **CloudWatch** for monitoring and alerting
 
-## 🚀 How to Run
+> 💡 See `Diagram 5.1` in the report for full AWS infrastructure layout.
 
-1. Clone this repository into `htdocs/`
-2. Import `database.sql` via phpMyAdmin
-3. Open `http://localhost/todo-app/register.php` to test user flow
-4. Open `http://localhost/todo-app/admin_login.php` to access admin dashboard
+---
 
-## 🧪 Default Admin Login
-- Username: `admin`
-- Password: `admin123`
+## 🧾 Folder Structure
 
-## 🎓 Developed by Group TT4L
-- Pravin Kunasegran (1221303877)
-- Ahmad Hykal Hakimi Bin Yusry (1221305344)
-- Sunterresaa Sankar (1211102415)
