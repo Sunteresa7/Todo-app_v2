@@ -89,4 +89,4 @@ This is a secure, role-based To-Do List web application developed for the **CCS6
 ## 📄 Report & Documentation
 
 📄 Project Report (PDF): [reportupdated.pdf](#)  
-🗂️ Infrastructure as Code: [`iac-todo-app-stack.yaml`](infrastructure/iac-todo-app-stack.yaml)  
+🗂️ Infrastructure as Code: [`iac-todo-app-stack.yaml`](todo-app.yaml)  
