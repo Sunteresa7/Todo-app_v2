@@ -62,10 +62,8 @@ todo-app/
 ├── delete_user.php
 ├── admin_login.php
 └── database.sql
-
 infrastructure/
 └── iac-todo-app-stack.yaml
-
 README.md
 
 ## 🚀 How to Deploy on AWS (Simplified)
