@@ -51,7 +51,7 @@ This is a secure, role-based To-Do List web application developed for the **CCS6
 ## 🚀 How to Deploy on AWS
 
 1. **Launch CloudFormation Stack**  
-   Upload `iac-todo-app-stack.yaml` via AWS CloudFormation to create all resources (EC2, RDS, ALB, etc.)
+   Upload `todo-app.yaml` via AWS CloudFormation to create all resources (EC2, RDS, ALB, etc.)
 
 2. **SSH into EC2**  
    Transfer all `.php` files into `/var/www/html/`
