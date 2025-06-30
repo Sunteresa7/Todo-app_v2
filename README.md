@@ -1,3 +1,4 @@
+
 # 🛡️ Secure To-Do List Management System (AWS Migration Project)
 
 This is a secure, role-based To-Do List web application developed for the **CCS6344 Database & Cloud Security** course. The system was originally built using XAMPP (PHP + MySQL) and is now fully migrated to **Amazon Web Services (AWS)** with modern cloud-native architecture and security controls.
@@ -49,3 +50,63 @@ This is a secure, role-based To-Do List web application developed for the **CCS6
 
 ## 🧾 Folder Structure
 
+todo-app/
+├── login.php
+├── register.php
+├── logout.php
+├── db.php
+├── dashboard.php
+├── delete_task.php
+├── edit_task.php
+├── admin_dashboard.php
+├── delete_user.php
+├── admin_login.php
+└── database.sql
+
+infrastructure/
+└── iac-todo-app-stack.yaml
+
+README.md
+
+## 🚀 How to Deploy on AWS (Simplified)
+
+1. **Launch CloudFormation Stack**  
+   Upload `iac-todo-app-stack.yaml` via AWS CloudFormation to create all resources (EC2, RDS, ALB, etc.)
+
+2. **SSH into EC2**  
+   Transfer all `.php` files into `/var/www/html/`
+
+3. **Import the Database**  
+   Use the `mysql` CLI to connect to RDS and import `database.sql`
+
+4. **Test the App**  
+   Access via the ALB DNS (e.g., `http://todo-alb-xxxxxx.ap-southeast-1.elb.amazonaws.com/login.php`)
+
+---
+
+## 🎥 Demo Video
+
+📺 [Click to Watch on YouTube](#)  
+*(Insert your demo video link here once uploaded)*
+
+---
+
+## 🧪 Default Admin Login
+
+- Username: `admin`
+- Password: `admin123`
+
+---
+
+## 👥 Developed by Group TT4L
+
+- Pravin Kunasegran (1221303877)  
+- Ahmad Hykal Hakimi Bin Yusry (1221305344)  
+- Sunterresaa Sankar (1211102415)
+
+---
+
+## 📄 Report & Documentation
+
+📄 Project Report (PDF): [reportupdated.pdf](#)  
+🗂️ Infrastructure as Code: [`iac-todo-app-stack.yaml`](infrastructure/iac-todo-app-stack.yaml)  
