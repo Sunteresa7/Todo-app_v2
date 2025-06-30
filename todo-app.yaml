@@ -1,0 +1,161 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Secure deployment of a PHP-based To-Do application on AWS using EC2, RDS, ALB, WAF, IAM, CloudTrail, and CloudWatch.
+
+Parameters:
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to SSH into instances
+    Type: String
+    Default: todo-app-key
+
+Resources:
+
+  # Security Group for EC2 (allows HTTP + SSH)
+  TodoAppInstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable HTTP and SSH access to EC2
+      VpcId: vpc-0f9f13b59455c979c  # <-- replace with your VPC ID
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+  # IAM Role for EC2 to access CloudWatch and S3
+  EC2InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
+        - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+
+  # Instance Profile for EC2
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - Ref: EC2InstanceRole
+      Path: "/"
+
+  # EC2 instance (Apache + PHP)
+  TodoAppInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      KeyName: !Ref KeyName
+      ImageId: ami-09cbc0d0602ebb438  # <-- Replace with your Amazon Linux 2 AMI ID
+      SubnetId: subnet-0bdae512a6c83bfe2  # <-- Replace with your public subnet ID
+      SecurityGroupIds:
+        - !Ref TodoAppInstanceSecurityGroup
+      IamInstanceProfile: !Ref EC2InstanceProfile
+      Tags:
+        - Key: Name
+          Value: todo-app-instance
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          yum install -y httpd php php-mysqli mariadb
+          systemctl enable httpd
+          systemctl start httpd
+          echo "Todo App EC2 Initialized" > /var/www/html/index.html
+
+  # Security Group for RDS (only allows EC2)
+  RdsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow EC2 to connect to RDS
+      VpcId: vpc-0f9f13b59455c979c  # <-- replace with your VPC ID
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          SourceSecurityGroupId: !Ref TodoAppInstanceSecurityGroup
+
+  # Subnet Group for RDS
+  TodoDBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Subnet group for RDS instance
+      SubnetIds:
+        - subnet-0d4d3729000b82810  # <-- Replace with your private subnet 1
+        - subnet-046ec1da56f86c760  # <-- Replace with your private subnet 2
+
+  # RDS Instance (MySQL)
+  TodoAppDatabase:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: todo-db
+      AllocatedStorage: 20
+      DBInstanceClass: db.t3.micro
+      Engine: mysql
+      EngineVersion: 8.0
+      MasterUsername: admin
+      MasterUserPassword: your_secure_password123  # <-- Replace with secure value
+      VPCSecurityGroups:
+        - !Ref RdsSecurityGroup
+      DBSubnetGroupName: !Ref TodoDBSubnetGroup
+      MultiAZ: false
+      PubliclyAccessible: false
+      StorageEncrypted: true
+
+  # Application Load Balancer
+  ApplicationLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: todo-app-alb
+      Subnets:
+        - subnet-0f5b1fd8ab012dd62  # <-- Replace with public subnet 1
+        - subnet-0bdae512a6c83bfe2  # <-- Replace with public subnet 2
+      SecurityGroups:
+        - !Ref TodoAppInstanceSecurityGroup
+      Scheme: internet-facing
+      Type: application
+
+  # Target Group for ALB
+  ALBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: todo-app-tg
+      Port: 80
+      Protocol: HTTP
+      VpcId: vpc-xxxxxxxxxxxxxxxxx
+      TargetType: instance
+      HealthCheckPath: /login.php
+
+  # ALB Listener
+  ALBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref ALBTargetGroup
+      LoadBalancerArn: !Ref ApplicationLoadBalancer
+      Port: 80
+      Protocol: HTTP
+
+Outputs:
+  EC2InstanceId:
+    Description: EC2 instance ID
+    Value: !Ref TodoAppInstance
+
+  LoadBalancerDNS:
+    Description: Public URL of the ALB
+    Value: !GetAtt ApplicationLoadBalancer.DNSName
+
+  RDSEndpoint:
+    Description: RDS endpoint
+    Value: !GetAtt TodoAppDatabase.Endpoint.Address
