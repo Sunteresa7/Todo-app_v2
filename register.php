@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
 
     // reCAPTCHA validation
-    $recaptchaSecret = '6LfeFDQrAAAAAJwNeStexyFTQRBb-Nz1cgWkxuPd';
+    $recaptchaSecret = '6Ldex2grAAAAAGshWla6mWIS2EKl42ez6vTxkvrk';
     $recaptchaResponse = $_POST['g-recaptcha-response'];
     $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$recaptchaSecret&response=$recaptchaResponse");
     $responseData = json_decode($response);
@@ -48,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="mb-3">
                         <input type="password" name="password" class="form-control" placeholder="Password" required>
                     </div>
-                    <div class="g-recaptcha mb-3" data-sitekey="6LfeFDQrAAAAAE6-wM1J2-pvYHa4A-MeVAq0n0H1"></div>
+                    <div class="g-recaptcha mb-3" data-sitekey="6Ldex2grAAAAAD3GLsvmogOkl1-syWL2vy0BsH89"></div>
                     <button type="submit" class="btn btn-success w-100">Register</button>
                 </form>
                 <p class="mt-3 text-center">Already have an account? <a href="login.php">Login here</a></p>
