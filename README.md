@@ -88,5 +88,5 @@ This is a secure, role-based To-Do List web application developed for the **CCS6
 
 ## 📄 Report & Documentation
 
-📄 Project Report (PDF): [reportupdated.pdf](#)  
+📄 Project Report (PDF): [Assignment2_Report.pdf](#)  
 🗂️ Infrastructure as Code: [`todo-app.yaml`](todo-app.yaml)  
